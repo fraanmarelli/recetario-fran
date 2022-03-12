@@ -1,9 +1,25 @@
 import Link from "next/link";
+import { createClient } from "contentful";
 
 
-const type = ['Dulce','Salado','Sopas','Salsas']
+export const getStaticProps = async () => {
+  const client = createClient({
+    space: process.env.CONTENTFUL_SPACE,
+    accessToken: process.env.CONTENTFUL_API_KEY,
+  });
 
-const Navbar = () => {
+  const response = await client.getEntries({
+    content_type: "recipe",
+  });
+  
+  return {
+    props: {
+      recipes: response.items,
+    },
+  };
+};
+
+const Navbar = ({recipes}) => {
   return (
     <>
       <div className="navbar-container">
